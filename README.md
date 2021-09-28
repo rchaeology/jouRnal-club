@@ -10,6 +10,10 @@ git clone git@github.com:rchaeology/jouRnal-club.git
 
 Once cloned, you can 'pull' the new materials each month.
 
+```git
+git pull
+```
+
 ## Topics
 
 To suggest a topic and an article to discuss at the journal club, submit an issue [here](https://github.com/rchaeology/jouRnal-club/issues/new?assignees=&labels=&template=suggest-a-topic.md&title=).
