@@ -10,7 +10,7 @@ git clone git@github.com:rchaeology/jouRnal-club.git
 
 Once cloned, you can 'pull' the new materials each month.
 
-```git
+```bash
 git pull
 ```
 
