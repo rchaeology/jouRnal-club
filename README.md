@@ -1,4 +1,4 @@
-# Rchaeology Journal Club
+# 📚 Rchaeology Journal Club
 
 Repository for the monthly Rchaeology journal club.
 
