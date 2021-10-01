@@ -17,3 +17,11 @@ git pull
 ## Topics
 
 To suggest a topic and an article to discuss at the journal club, submit an issue [here](https://github.com/rchaeology/jouRnal-club/issues/new?assignees=&labels=&template=suggest-a-topic.md&title=).
+
+### Previous topics
+
+- Raincloud plots
+- Bayesian stats in Archaeology
+- R Markdown
+- R Compendia (rrtools)
+- R packages
