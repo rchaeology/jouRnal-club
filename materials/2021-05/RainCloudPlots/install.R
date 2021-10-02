@@ -1,0 +1,10 @@
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("lavaan")
+install.packages("plyr")
+install.packages("cowplot")
+install.packages("rmarkdown")
+install.packages("readr")
+install.packages("caTools")
+install.packages("bitops")
+
