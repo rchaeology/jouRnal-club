@@ -6,6 +6,7 @@ It contains the materials for each month, so you can clone the repository for ea
 
 ```bash
 git clone git@github.com:rchaeology/jouRnal-club.git
+cd jouRnal-club
 ```
 
 Once cloned, you can 'pull' the new materials each month.
