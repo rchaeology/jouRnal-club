@@ -8,3 +8,6 @@ assignees: ''
 ---
 
 <!-- Use this space to suggest a topic and/or a paper you would like to discuss at a future journal club -->
+**Suggested topic:**
+
+**Suggested paper:**
