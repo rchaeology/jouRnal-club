@@ -7,10 +7,11 @@ assignees: ''
 
 ---
 
-<!-- Use this space to suggest a topic and/or a paper you would like to discuss at a future journal club -->
-**Suggested topic:**
+**Suggested topic:** <!-- write your suggested topic here (and feel free to delete this comment) -->
 
-**Suggested paper:**
+**Suggested paper:** <!-- optional -->
 
 ---
 **Additional comments**
+
+<!-- any addtional remarks go here -->
