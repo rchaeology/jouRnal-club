@@ -28,5 +28,6 @@ To vote for a topic, use the thumbs-up 👍 in the reactions:
 - Raincloud plots
 - Bayesian stats in Archaeology
 - R Markdown
-- R Compendia (rrtools)
+- R Compendia [rrtools](https://github.com/benmarwick/rrtools)
 - R packages
+- Websites with [blogdown](https://bookdown.org/yihui/blogdown/)
