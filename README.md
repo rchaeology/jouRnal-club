@@ -19,6 +19,10 @@ git pull
 
 To suggest a topic and an article to discuss at the journal club, submit an issue [here](https://github.com/rchaeology/jouRnal-club/issues/new?assignees=&labels=&template=suggest-a-topic.md&title=).
 
+To vote for a topic, use the thumbs-up 👍 in the reactions:
+
+![](assets/img/issues.png)
+
 ### Previous topics
 
 - Raincloud plots
