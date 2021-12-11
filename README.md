@@ -29,5 +29,5 @@ To vote for a topic, use the thumbs-up 👍 in the reactions:
 - Bayesian stats in Archaeology
 - R Markdown
 - R Compendia [rrtools](https://github.com/benmarwick/rrtools)
-- R packages
+- R packages [archaeoinformatics blog](http://archaeoinformatics.net/r-package-development/)
 - Websites with [blogdown](https://bookdown.org/yihui/blogdown/)
