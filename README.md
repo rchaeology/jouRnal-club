@@ -1,5 +1,7 @@
 # 📚 Rchaeology Journal Club
 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 Repository for the monthly Rchaeology journal club.
 
 It contains the materials for each month, so you can clone the repository for easy access to the materials.
