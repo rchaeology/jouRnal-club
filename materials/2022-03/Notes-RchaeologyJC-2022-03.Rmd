@@ -1,0 +1,198 @@
+---
+title: "Quant for Arch, Chapter 2 - Baxter 2015"
+author: "Laure Spake"
+date: "3/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2.1  Introduction
+
+These are notes and the code for the introductory examples in Chapter 2 of Baxter's Notes on Quantitative Archaeology in R. The data for these examples is `tubb.data` and was included in the appendices to the book.
+
+```{r data}
+
+tubb <- read.csv("tubb-data.csv") #full data
+tubb.data <- tubb[, 1:9] #data minus 10th column (region)
+
+```
+
+## 2.2  Example - Principal component analysis
+
+Questions that were posed by Tubb et al. 1980, where the data was originally published, were: 
+
+* Ignoring 'region' is there evidence of grouping in the data?
+* If grouping exists, can it be associated with region?
+* What variables contribute the most to group separation, if groups exist?
+* Can a subset of variables describe the data well?
+
+Principal component analysis (PCA) can be used to answer these questions.
+
+The data exist in mathematical terms in 9 dimensions, but can't be easily visualized that way. PCA is used to transform the variables into new variables - *principal components*. The bivariate plots of the first two approximate in the distance between these points (in *n* original dimensions) across 2 dimensions.
+
+```{r pressure}
+# below, scale = T standardizes the variables to mean = 0, giving all variables equal weight
+biplot(prcomp(tubb.data, scale = TRUE)) 
+```
+
+What is important for interpretation of the data in this plot is that it reveals three clusters, which we can infer may represent the three regions in the data (more on this below). 
+
+To interpret the plot: 
+
+* Arrowed lines (vectors) point to the variable markers
+* Angles between the vectors approximate the correlation between variables, so that Al and Ti are strongly positively correlated with each other, strongly negatively correlated with Ba, Mn, Mg, and poorly correlated with Na
+* The cluster to the bottom left has low values for variable that point away from it, e.g. K
+
+--- 
+
+The plot above conceals two steps of analysis: calculating the PCs and then plotting them. You can do them separately, see below:
+
+```{r pca}
+
+tubb.pca <- prcomp(tubb.data, scale = TRUE)
+biplot(tubb.pca)
+
+```
+
+----
+
+The ouput of the PCA is an object. You can examine its structure using the `str` command. The important item for further manipulation is `tubb.pca$x`, which stores the PC scores for each PC and each individual.
+
+```{r pca-structure}
+
+str(tubb.pca)
+
+```
+
+----
+
+You can manually produce a PC plot that looks a bit nicer with a bit of extra work. Note, Baxter does this with standard plotting, but it would be easier to do with ggplot. 
+
+```{r fig2.2}
+library(MASS)
+Coltubb <- c(rep("pink", 22), rep("skyblue", 16), rep("green2",10))
+Symtubb <- c(rep(15, 22), rep(16, 16), rep(17, 10))
+# the above steps just create variables for formatting the plot
+
+tubb.pca <- prcomp(tubb.data, scale = TRUE) #do pca on data, scaling variables
+tubb.x <- tubb.pca$x #extract the PCscores for each individual (row of df)
+x1 <- tubb.x[,1]; x2 <- tubb.x[,2] #save the scores for PC1 and PC2 into two vectors
+
+# plot PCs 1 and 2, with options for color and point type to match region, adjust legend to match
+eqscplot(x1, x2, col = Coltubb, pch = Symtubb, xlab = "PC1",
+ylab = "PC2", cex = 2.5)
+text(x1, x2, 1:dim(tubb.x)[1], cex = 0.75)
+legend("topleft", c("Region 1", "Region 2", "Region 3"),
+col = c("pink", "skyblue", "green2"), pch = c(15, 16, 17),
+title = "Region", bty = "n", cex = 1.2, pt.cex = 2)
+```
+
+
+Here is the same thing using the tidyverse. 
+
+```{r fig2.2-tidyverse, message=FALSE}
+library(tidyverse)
+
+tubb.x <- data.frame(tubb.pca$x) %>%  #extract PCs
+  select(PC1, PC2) %>% #keep only the first two PCs
+  mutate(Region = as.character(tubb$Region)) # add Region column from original tubb data
+
+ggplot(tubb.x, aes(x = PC1, y = PC2))+ #plot tubb.x, specifying variables to use
+  geom_point(aes(col = Region, shape = Region), size = 3)+ #add a point layer and set color and shape of the point for each of values of Region, and increase the size of the points
+  geom_text(aes(label = rownames(tubb.x)), size = 3)+ #add labels to the points and make them smaller
+  theme_classic() # set a more minimal theme
+
+```
+
+Baxter then advocates for continuing to look at bivariate relationships, which also show clustering of the three different regions. He argues that these bivariate plots show that the three regions are chemically distinct, that only two variables are needed to show this, and that the variables showing these differences can be selected in multiple ways. 
+
+
+Lastly, Baxter proposes that you can summarize differences between the groups by calculating the means, medians,standard deviations, and interquartile ranges (IQR) for each of the groups. He does this for one of the elements, K, and suggests that you can calculate the same values for each of the regions then by replacing `K` as the argument in the summary functions with `K[tubb.region == 1]`, substituting 2, 3 to calculate each region in turn. He also gives you the possibility to remove the outlier (row 36), and to recalculate means substituting `K Out[tubb:region Out == 2]` for `K`.
+
+
+```{r table2.1}
+K <- tubb.data$K # tubb.data[ , 6] could also be used
+# Create new data omitting an outlier, case 36
+K_Out <- K[-36]
+tubb.region <- c(rep(1, 22), rep(2, 16), rep(3, 10))
+tubb.region_Out <- tubb.region[-36]
+m <- mean(K)
+med <-median(K)
+sd <- sd(K) # standard deviation
+IQR <- IQR(K) # Inter-Quartile Range
+statistics <- c(m, med, sd, IQR)
+print(round(statistics, 2))
+```
+
+
+## 2.3  Example - Correspondence analysis
+
+Correspondence analysis (CA) is often used for seriation, and is a way to analyze two-way cross-tabulations for categorical variable. The aims of CA are the same as those of PCA.
+
+
+## 2.4  Example - Cluster analysis
+
+Cluster analysis is a term that encompasses several types of methods. The idea behind the method is to take a set of continuous data and group them so that clusters are similar to each other and different from other clusters. 
+
+Clustering appears to be similar to phylogenetic analysis?
+
+The output of these analyses are *dendograms*, or tree-diagrams, with branches leading downwards to "leaves" or cases. 
+
+```{r cluster1}
+
+#explanation of this line of code below the figure 
+plot(hclust(dist(scale(tubb.data)), method = "ward.D")) 
+
+```
+
+In this output, Baxter argues that the three large clusters corresponds to the three regions.
+
+High level notes on the code/output:
+
+* Data must first be transformed, done here using the `scale` function
+* Strategy for measuring similarity between cases must be chosen (using argument `dist`). The Euclidean distance is the most commonly used and is the default for this function.
+* A method for clustering the data must  be chosen. Hierarchical clustering is common, and performed here using the function `hclust`
+  * Method/algorithm used for hierarchical clustering can be specifying using `method` argument. Some choices are: `"ward.D"` for Ward's method, `"s"` for single-link, and `"a"` for average-link. 
+  
+
+A comparison of the results produced by specifying Ward's method versus single-linkage.
+
+```{r cluster2, fig.show="hold", out.width="50%"}
+
+plot(hclust(dist(scale(tubb.data)), method = "ward.D"), 
+labels = tubb.region, sub = " ", xlab = " ", cex = 0.8,
+main = "Ward's method cluster analysis - Romano-British pot compositions")
+
+
+plot(hclust(dist(scale(tubb.data)), method = "s"),
+labels = tubb.region, sub = " ", xlab = " ", cex = 0.8,
+main = "Single-linkage cluster analysis - Romano-British pot compositions")
+
+```
+Baxter highlights that the two plots look different, and that this is typically the case when due to the choice of clustering method used. The two methods may yield different interpretations of the relationships between the cases at the fine-grained level, but at the coarse level, Baxter argues that it is clear that the clusters primarily reflect the three different regions. 
+
+
+## 2.5  Example - Linear discriminant analysis
+
+LDA is another method that is similar to PCA. It also uses continuous methods. The main difference between LDA and PCA is that LDA is "supervised" - it uses group membership information in the analysis in order to better separate out the groups. 
+
+```{r lda}
+
+# explanation of the line of code below the figure
+eqscplot(predict(lda(tubb.data, tubb.region), dim = 2)$x)
+
+```
+
+There is a lot happening here in one line of code. 
+
+High level notes on the structure of the code/output, from inside out:
+
+* The `lda` function performs the LDA. You can feed data two ways: the first is as Baxter has done, with the first argument being a matrix/data frame with the explanatory variables and the second being the grouping criteria; or, with a formula. If using the formula, the first argument would be the formula (e.g. `y ~ x1 + x2...`) where `y` is the grouping variable and `x1` through `xn` are the variables to be summarizes, and the second being the data frame containing these variables.
+* The `predict` function calculates the scores for the cases for the first x discriminant functions (specified using `dim` and in this example for the first 2 dimensions)
+  * `predict`returns a list where the `$x` contains the scores
+* `eqscplot` simply plots the two scores on the x and y axis 
+
+The main takeaway from this brief introduction on LDA is that there are 3 groups and that they are more separated than they were by the other types of analyses (PCA and clustering)
